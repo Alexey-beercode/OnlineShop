@@ -5,43 +5,46 @@ using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class UserRepository(ShopDbContext dbContext) : IUserRepository
+public class UserRepository : IUserRepository
 {
-    public async Task<User> GetById(Guid id)
+    private readonly ShopDbContext _dbContext;
+
+    public UserRepository(ShopDbContext dbContext)
     {
-        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id.Equals(id));
-        return user; //TODO: Add error return after merge 
+        _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<User>> GetAll()
+    public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var users = await dbContext.Users.Where(u=> !u.IsDeleted).ToListAsync();
-        return users; //TODO: Add error return after merge 
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
-    public async Task CreateAsync(User user)
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        dbContext.Users.Add(user);
-        await dbContext.SaveChangesAsync();
+        return await _dbContext.Users.Where(u => !u.IsDeleted).ToListAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(User user)
+    public async Task CreateAsync(User user, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)
     {
         user.IsDeleted = true;
-
-        dbContext.Users.Update(user);
-        await dbContext.SaveChangesAsync();
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
     {
-        dbContext.Users.Update(user);
-        await dbContext.SaveChangesAsync();
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<User?> GetByLoginAsync(string login)
+    public async Task<User> GetByLoginAsync(string login, CancellationToken cancellationToken = default)
     {
-        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Login.Equals(login));
-        return user;
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login, cancellationToken);
     }
 }
