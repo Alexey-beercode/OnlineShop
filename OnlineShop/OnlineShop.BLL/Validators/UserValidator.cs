@@ -1,7 +1,7 @@
 using FluentValidation;
 using OnlineShop.DAL.Entities.Implementations;
 
-namespace OnlineShop.DAL.Validators;
+namespace OnlineShop.BLL.Validators;
 
 public class UserValidator : AbstractValidator<User>
 {
