@@ -16,14 +16,12 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var user = await _dbContext.Users.FindAsync(id, cancellationToken);
-        return user;
+        return await _dbContext.Users.FindAsync(id, cancellationToken);
     }
 
     public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var users = await _dbContext.Users.Where(u => !u.IsDeleted).ToListAsync(cancellationToken);
-        return users;
+        return await _dbContext.Users.Where(u => !u.IsDeleted).ToListAsync(cancellationToken);
     }
 
     public async Task CreateAsync(User user, CancellationToken cancellationToken = default)
@@ -47,7 +45,6 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetByLoginAsync(string login, CancellationToken cancellationToken = default)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login, cancellationToken);
-        return user;
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Login == login, cancellationToken);
     }
 }
