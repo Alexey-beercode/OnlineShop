@@ -2,6 +2,6 @@
 
 public interface IBaseRepository<T>
 {
-    Task<T> GetById(Guid id);
-    Task<IEnumerable<T>> GetAll();
+    Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
 }
