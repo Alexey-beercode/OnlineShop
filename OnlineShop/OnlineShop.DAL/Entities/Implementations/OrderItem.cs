@@ -9,8 +9,8 @@ public class OrderItem : IEntity
     public required int ProductId { get; set; }
     public required int Quantity { get; set; }
 
-    public required Order Order { get; set; }
-    public required Product Product { get; set; }
+    public Order Order { get; set; } = null!;
+    public Product Product { get; set; } = null!;
 
-    public required bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }

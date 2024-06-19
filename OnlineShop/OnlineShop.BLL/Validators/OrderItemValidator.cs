@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.DAL.Entities.Validators
+namespace OnlineShop.BLL.Entities.Validators
 {
     public class OrderItemValidator : AbstractValidator<OrderItem>
     {
