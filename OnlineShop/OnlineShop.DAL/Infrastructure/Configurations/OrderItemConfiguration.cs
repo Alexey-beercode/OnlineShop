@@ -15,7 +15,12 @@ namespace OnlineShop.DAL.Infrastructure.Configurations
         {
             builder.ToTable("OrderItems");
 
-            ///TODO: make links after merge all entities to develop branch
+            builder.HasQueryFilter(oi => oi.IsDeleted == false);
+
+            builder.HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
