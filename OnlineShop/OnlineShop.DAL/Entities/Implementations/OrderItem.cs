@@ -11,4 +11,6 @@ public class OrderItem : IEntity
 
     public required Order Order { get; set; }
     public required Product Product { get; set; }
+
+    public required bool IsDeleted { get; set; }
 }
