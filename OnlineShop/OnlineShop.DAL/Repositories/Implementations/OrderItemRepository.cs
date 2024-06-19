@@ -9,7 +9,7 @@ namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class OrderItemRepository : IBaseRepository<OrderItem>
 {
-    public ShopDbContext _context;
+    private readonly ShopDbContext _context;
 
     public OrderItemRepository(ShopDbContext context)
     {
@@ -29,21 +29,19 @@ public class OrderItemRepository : IBaseRepository<OrderItem>
     public async Task CreateAsync(OrderItem entity, CancellationToken cancellationToken = default)
     {
         _context.OrderItems.Add(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteAsync(OrderItem entity, CancellationToken cancellationToken = default)
     {
         entity.IsDeleted = true;
         _context.OrderItems.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(OrderItem entity, CancellationToken cancellationToken = default)
     {
         _context.OrderItems.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
-
-
 }
