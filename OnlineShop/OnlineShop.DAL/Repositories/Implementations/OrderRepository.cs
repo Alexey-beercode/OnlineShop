@@ -1,32 +1,62 @@
-﻿using OnlineShop.DAL.Entities.Implementations;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class OrderRepository:IBaseRepository<Order>
+public class OrderRepository : IOrderRepository
 {
-    public Task CreateAsync(Order entity, CancellationToken cancellationToken = default)
+    private readonly ShopDbContext _dbContext;
+
+    public OrderRepository(ShopDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task DeleteAsync(Order entity, CancellationToken cancellationToken = default)
+    public async Task<Order> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Orders
+        .Include(o => o.OrderItems)
+        .ThenInclude(oi => oi.Product)
+        .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
     }
 
-    public Task UpdateAsync(Order entity, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Order>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+            .Where(o => !o.IsDeleted)
+            .ToListAsync(cancellationToken);
     }
 
-    public Task<Order> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Order order, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        _dbContext.Orders.Add(order);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<IEnumerable<Order>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(Order order, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        order.IsDeleted = true;
+        _dbContext.Orders.Update(order);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(Order order, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Orders.Update(order);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+
+    {
+        return await _dbContext.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+            .Where(o => o.UserId == userId && !o.IsDeleted)
+            .ToListAsync(cancellationToken);
     }
 }

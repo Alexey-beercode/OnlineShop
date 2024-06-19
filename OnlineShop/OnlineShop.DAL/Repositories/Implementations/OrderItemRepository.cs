@@ -1,9 +1,13 @@
-﻿using OnlineShop.DAL.Entities.Implementations;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Exceptions;
+using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Interfaces;
+using System.Collections.Immutable;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class OrderItemRepository:IBaseRepository<OrderItem>
+public class OrderItemRepository : IBaseRepository<OrderItem>
 {
     public Task CreateAsync(OrderItem entity, CancellationToken cancellationToken = default)
     {
@@ -20,13 +24,20 @@ public class OrderItemRepository:IBaseRepository<OrderItem>
         throw new NotImplementedException();
     }
 
-    public Task<OrderItem> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public ShopDbContext _context;
+
+    public OrderItemRepository(ShopDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<IEnumerable<OrderItem>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<OrderItem> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+         return await _context.OrderItems.SingleAsync(oi => oi.Id == id, cancellationToken);
+    }
+
+    public async Task<IEnumerable<OrderItem>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.OrderItems.ToListAsync(cancellationToken);
     }
 }
