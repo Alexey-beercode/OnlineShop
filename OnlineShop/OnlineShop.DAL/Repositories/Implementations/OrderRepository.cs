@@ -54,9 +54,9 @@ public class OrderRepository : IOrderRepository
 
     {
         return await _dbContext.Orders
-            .Include(o => o.OrderItems)
+        .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
-            .Where(o => o.UserId == userId && !o.IsDeleted)
-            .ToListAsync(cancellationToken);
+        .Where(o => o.User.Id == userId && !o.IsDeleted)
+        .ToListAsync(cancellationToken);
     }
 }
