@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.DAL.Exceptions
+namespace OnlineShop.BLL.Exceptions
 {
     public class EntityNotFoundException : ServiceException
     {
