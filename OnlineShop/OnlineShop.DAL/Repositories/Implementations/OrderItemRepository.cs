@@ -5,12 +5,12 @@ namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class OrderItemRepository:IBaseRepository<OrderItem>
 {
-    public Task<OrderItem> GetById(Guid id)
+    public Task<OrderItem> GetByIdAsync(Guid id,CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<OrderItem>> GetAll()
+    public Task<IEnumerable<OrderItem>> GetAllAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

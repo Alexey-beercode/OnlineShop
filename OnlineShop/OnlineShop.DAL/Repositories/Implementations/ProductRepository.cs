@@ -1,17 +1,50 @@
-﻿using OnlineShop.DAL.Entities.Implementations;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class ProductRepository:IBaseRepository<Product>
 {
-    public Task<Product> GetById(Guid id)
+    private readonly ShopDbContext _dbContext;
+
+    public ProductRepository(ShopDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task<IEnumerable<Product>> GetAll()
+    public async Task<Product> GetByIdAsync(Guid id,CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Products.FindAsync(id, cancellationToken);
+    }
+
+    public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Products.Where(a => !a.IsDeleted).ToListAsync(cancellationToken);
+    }
+
+    public async Task CreateAsync(Product product, CancellationToken cancellationToken)
+    {
+        await _dbContext.Products.AddAsync(product, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(Product product, CancellationToken cancellationToken)
+    { 
+        _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Product product, CancellationToken cancellationToken)
+    {
+        product.IsDeleted = true;
+        _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Products.Where(a => !a.IsDeleted && a.CategoryId == categoryId).ToListAsync();
     }
 }

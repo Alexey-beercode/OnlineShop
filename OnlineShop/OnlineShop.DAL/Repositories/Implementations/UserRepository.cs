@@ -5,12 +5,12 @@ namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class UserRepository:IBaseRepository<User>
 {
-    public Task<User> GetById(Guid id)
+    public Task<User> GetByIdAsync(Guid id,CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<User>> GetAll()
+    public Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
