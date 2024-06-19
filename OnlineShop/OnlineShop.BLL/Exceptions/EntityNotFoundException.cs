@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.DAL.Exceptions
 {
-    public class EntityNotFoundException : RepositoryException
+    public class EntityNotFoundException : ServiceException
     {
         public EntityNotFoundException(string entityName, Guid id)
             : base($"Can't find entity of type {entityName} with ID {id}.") { }

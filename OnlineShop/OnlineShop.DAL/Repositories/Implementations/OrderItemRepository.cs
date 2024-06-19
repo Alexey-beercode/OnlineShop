@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class OrderItemRepository:IBaseRepository<OrderItem>
+public class OrderItemRepository : IBaseRepository<OrderItem>
 {
     public ShopDbContext _context;
 
@@ -16,15 +16,13 @@ public class OrderItemRepository:IBaseRepository<OrderItem>
         _context = context;
     }
 
-    public async Task<OrderItem> GetById(Guid id)
+    public async Task<OrderItem> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _context.OrderItems.SingleOrDefaultAsync(oi => oi.Id == id);
-        return result ?? throw new EntityNotFoundException(nameof(OrderItem), id);
+         return await _context.OrderItems.SingleAsync(oi => oi.Id == id, cancellationToken);
     }
 
-    public async Task<IEnumerable<OrderItem>> GetAll()
+    public async Task<IEnumerable<OrderItem>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _context.OrderItems.ToListAsync();
-        return result ?? throw new RepositoryException("Cant find OrderItems table");
+        return await _context.OrderItems.ToListAsync(cancellationToken);
     }
 }
