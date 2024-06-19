@@ -422,6 +422,7 @@ FodyWeavers.xsd
 *.suo
 *.user
 .vs/
+.idea/
 [Bb]in/
 [Oo]bj/
 _UpgradeReport_Files/
