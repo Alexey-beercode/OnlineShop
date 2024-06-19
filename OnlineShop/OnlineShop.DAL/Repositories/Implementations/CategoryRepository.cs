@@ -5,12 +5,12 @@ namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class CategoryRepository:IBaseRepository<Category>
 {
-    public Task<Category> GetById(Guid id)
+    public Task<Category> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Category>> GetAll()
+    public Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
