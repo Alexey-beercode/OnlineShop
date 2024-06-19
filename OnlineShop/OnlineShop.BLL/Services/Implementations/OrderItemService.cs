@@ -46,14 +46,14 @@ public class OrderItemService : IOrderItemService
         }
     }
 
-    public async Task<OrderItemsCollectionResponseDTO> GetAllAsync(CancellationToken token = default)
+    public async Task<IEnumerable<OrderItemResponseDTO>> GetAllAsync(CancellationToken token = default)
     {
-        var result = new OrderItemsCollectionResponseDTO();
         try
         {
-            result.OrderItems = await _orderItemRepository.GetAllAsync(token);
-            if (result.OrderItems == null)
+            var orderItemsCollection = await _orderItemRepository.GetAllAsync(token);
+            if (orderItemsCollection == null)
                 throw new ServiceException("Unable to get order items");
+            return _mapper.Map<IEnumerable<OrderItemResponseDTO>>(orderItemsCollection);
         }
         catch (ServiceException)
         {
@@ -63,8 +63,6 @@ public class OrderItemService : IOrderItemService
         {
             throw new ServiceException(ex.Message, ex);
         }
-
-        return result;
     }
 
     public async Task<OrderItemResponseDTO> GetByIdAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)

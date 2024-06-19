@@ -7,7 +7,7 @@ namespace OnlineShop.BLL.Services.Interfaces;
 public interface IOrderItemService
 {
     Task<OrderItemResponseDTO> GetByIdAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default);
-    Task<OrderItemsCollectionResponseDTO> GetAllAsync(CancellationToken token = default);
+    Task<IEnumerable<OrderItemResponseDTO>> GetAllAsync(CancellationToken token = default);
     Task CreateOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default);
     Task UpdateOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default);
     Task DeleteOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default);
