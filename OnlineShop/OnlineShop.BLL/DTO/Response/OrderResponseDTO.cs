@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.BLL.DTO.Response
 {
-    internal class OrderResponseDTO
+    public class OrderResponseDTO
     {
+        public Guid Id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public UserResponseDTO User { get; set; }
+        public ICollection<OrderItemResponseDTO> OrderItems { get; set; } = new List<OrderItemResponseDTO>();
     }
 }

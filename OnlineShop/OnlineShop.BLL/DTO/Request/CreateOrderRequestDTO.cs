@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.BLL.DTO.Request
 {
-    internal class CreateOrderRequestDTO
+    public class CreateOrderRequestDTO
     {
+        public required UserRequestDTO User { get; set; }
+        public ICollection<OrderItemRequestDTO> OrderItems { get; set; } = new List<OrderItemRequestDTO>();
     }
 }
