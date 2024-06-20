@@ -16,16 +16,13 @@ public class OrderItemService : IOrderItemService
 {
     private readonly IBaseRepository<OrderItem> _orderItemRepository;
     private readonly IMapper _mapper;
-    private readonly IValidator<OrderItemRequestDTO> _validator;
-    public OrderItemService(ShopDbContext context, IMapper mapper, AbstractValidator<OrderItemRequestDTO> validator)
+    public OrderItemService(ShopDbContext context, IMapper mapper)
     {
         _orderItemRepository = new OrderItemRepository(context);
         _mapper = mapper;
-        _validator = validator;
     }
     public async Task CreateOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
     {
-        await _validator.ValidateAndThrowAsync(requestDTO, token);
         var orderItem = _mapper.Map<OrderItem>(requestDTO);
         if (orderItem == null)
             throw new MappingException($"Unable to create entity of type {nameof(OrderItem)}.");
@@ -34,7 +31,6 @@ public class OrderItemService : IOrderItemService
 
     public async Task DeleteOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
     {
-        await _validator.ValidateAndThrowAsync(requestDTO, token);
         var orderItem = await _orderItemRepository.GetByIdAsync(requestDTO.Id);
         if (orderItem == null)
             throw new EntityNotFoundException(nameof(OrderItem), requestDTO.Id);
@@ -51,7 +47,6 @@ public class OrderItemService : IOrderItemService
 
     public async Task<OrderItemResponseDTO> GetByIdAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
     {
-        await _validator.ValidateAndThrowAsync(requestDTO, token);
         var orderItem = await _orderItemRepository.GetByIdAsync(requestDTO.Id, token);
         if (orderItem == null)
             throw new EntityNotFoundException(nameof(OrderItem), requestDTO.Id);
@@ -61,7 +56,6 @@ public class OrderItemService : IOrderItemService
 
     public async Task UpdateOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
     {
-        await _validator.ValidateAndThrowAsync(requestDTO, token);
         var orderItem = await _orderItemRepository.GetByIdAsync(requestDTO.Id, token);
         if (orderItem == null)
             throw new EntityNotFoundException(nameof(OrderItem), requestDTO.Id);

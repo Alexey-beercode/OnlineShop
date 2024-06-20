@@ -8,8 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
       <Folder Include="DTOs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.9.2" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+      <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Shared" Version="1.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.6.2" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.2" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OnlineShop.BLL\OnlineShop.BLL.csproj" />
     </ItemGroup>
 
 </Project>
