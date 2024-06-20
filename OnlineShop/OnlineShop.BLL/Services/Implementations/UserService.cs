@@ -1,12 +1,9 @@
-﻿using FluentValidation;
-using Mapster;
+﻿using MapsterMapper;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Helpers;
-using OnlineShop.BLL.Mappers;
 using OnlineShop.BLL.Services.Interfaces;
-using OnlineShop.BLL.Validators;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Interfaces;
 
@@ -15,34 +12,26 @@ namespace OnlineShop.BLL.Services.Implementations;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
+    private readonly IMapper _mapper;
+    public UserService(IUserRepository userRepository, IMapper mapper)
     {
-        MapsterConfig.Configure();
-        
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
-    public async Task<UserResponseDTO> GetByIdAsync(string userId, CancellationToken cancellationToken = default)
+    public async Task<UserResponseDTO> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var id = userId.Adapt<Guid>();
-
-        var user = await _userRepository.GetByIdAsync(id, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
         if (user is null)
         {
-            throw new EntityNotFoundException(nameof(User), id);
+            throw new EntityNotFoundException(nameof(User), userId);
         }
 
-        var userResponseDTO = user.Adapt<UserResponseDTO>();
-
-        return userResponseDTO;
+        return _mapper.Map<UserResponseDTO>(user);
     }
 
     public async Task LoginAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default)
     {
-        LoginValidator loginValidator = new LoginValidator();
-        await loginValidator.ValidateAndThrowAsync(loginRequestDTO, cancellationToken);
-
         var user = await _userRepository.GetByLoginAsync(loginRequestDTO.Login, cancellationToken);
         if (user is null)
         {
@@ -57,16 +46,14 @@ public class UserService : IUserService
 
     public async Task RegisterAsync(RegisterRequestDTO registerRequestDTO, CancellationToken cancellationToken = default)
     {
-        RegisterValidator registerValidator = new RegisterValidator();
-        await registerValidator.ValidateAndThrowAsync(registerRequestDTO, cancellationToken);
-        
         var user = await _userRepository.GetByLoginAsync(registerRequestDTO.Login, cancellationToken);
         if (user is not null)
         {
             throw new AuthenticationException("This login is already in use.");
         }
 
-        user = registerRequestDTO.Adapt<User>();
+        user = _mapper.Map<User>(registerRequestDTO);
+        user.PasswordHash = PasswordHelper.HashPassword(registerRequestDTO.Password);
 
         await _userRepository.CreateAsync(user, cancellationToken);
     }

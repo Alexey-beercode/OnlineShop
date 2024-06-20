@@ -5,7 +5,7 @@ namespace OnlineShop.BLL.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<UserResponseDTO> GetByIdAsync(string userId, CancellationToken cancellationToken = default);
+    Task<UserResponseDTO> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task LoginAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default);
     Task RegisterAsync(RegisterRequestDTO registerRequestDTO, CancellationToken cancellationToken = default);
 }
