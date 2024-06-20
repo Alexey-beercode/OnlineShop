@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.BLL.Exceptions
 {
-    public class EntityNotFoundException : ServiceException
+    public class EntityNotFoundException : Exception
     {
         public EntityNotFoundException() : base() { }
         public EntityNotFoundException(string message) : base(message) { }
