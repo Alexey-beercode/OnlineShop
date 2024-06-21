@@ -10,16 +10,6 @@ public static class MapsterConfig
 {
     public static void Configure()
     {
-        //TypeAdapterConfig<string, Guid>.NewConfig()
-        //    .MapWith(src => StringToGuidMapper.ToGuid(src));
-
-        //TypeAdapterConfig<Guid, string>.NewConfig()
-        //    .MapWith(src => StringToGuidMapper.ToString(src));
-
-        //TypeAdapterConfig<RegisterRequestDTO, User>.NewConfig()
-        //    .Map(dest => dest.PasswordHash, src => PasswordHelper.HashPassword(src.Password))
-        //    .Map(dest => dest.IsDeleted, src => false);
-
         TypeAdapterConfig<Order, OrderResponseDTO>.NewConfig()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.OrderDate, src => src.OrderDate)

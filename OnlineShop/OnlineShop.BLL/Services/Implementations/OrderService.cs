@@ -67,11 +67,9 @@ public class OrderService : IOrderService
         return orderResponseDTO;
     }
 
-    public async Task<IEnumerable<OrderResponseDTO>> GetOrdersByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OrderResponseDTO>> GetOrdersByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var id = userId.Adapt<Guid>();
-
-        var orders = await _orderRepository.GetOrdersByUserIdAsync(id, cancellationToken);
+        var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, cancellationToken);
 
         var ordersResponseDTO = orders.Adapt<IEnumerable<OrderResponseDTO>>();
         return ordersResponseDTO;
@@ -99,7 +97,7 @@ public class OrderService : IOrderService
 
         if (order.IsCancelled)
         {
-            throw new ValidationException("This order has already been cancelled.");
+            throw new OrderAlreadyCancelledException();
         }
 
         order.IsCancelled = true;
