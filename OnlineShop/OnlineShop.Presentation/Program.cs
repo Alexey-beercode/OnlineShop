@@ -14,8 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-//idk which way would be better (not sure that first is working in right way)
-//builder.Services.AddValidatorsFromAssembly(typeof(OrderItemValidator).Assembly);
+//TODO: Change way to check assembly without using certain validator class
 builder.Services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
 
 builder.Services.AddDbContext<ShopDbContext>(options =>
@@ -23,7 +22,7 @@ builder.Services.AddDbContext<ShopDbContext>(options =>
 
 builder.Services.AddSwaggerGen();
 
-//TODO: need to learn how it works
+
 TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 builder.Services.AddMapster();
 
@@ -35,7 +34,7 @@ builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 
 var app = builder.Build();
 
-if(app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
