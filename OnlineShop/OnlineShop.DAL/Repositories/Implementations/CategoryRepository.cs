@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Interfaces;
@@ -31,9 +32,9 @@ public class CategoryRepository : IBaseRepository<Category>
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Category>> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Category> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Categories.Where(a => !a.IsDeleted && a.Name==name).ToListAsync(cancellationToken);
+        return await _dbContext.Categories.FirstOrDefaultAsync(a => !a.IsDeleted && a.Name==name,cancellationToken);
     }
 
     public async Task DeleteAsync(Category category, CancellationToken cancellationToken = default)
@@ -43,7 +44,7 @@ public class CategoryRepository : IBaseRepository<Category>
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Update(Category category, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Category category, CancellationToken cancellationToken = default)
     {
         _dbContext.Categories.Update(category);
         await _dbContext.SaveChangesAsync(cancellationToken);

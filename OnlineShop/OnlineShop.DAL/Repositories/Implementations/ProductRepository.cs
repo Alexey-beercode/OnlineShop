@@ -21,7 +21,10 @@ public class ProductRepository:IBaseRepository<Product>
 
     public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _dbContext.Products.Where(a => !a.IsDeleted).ToListAsync(cancellationToken);
+        return await _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .Where(p => !p.IsDeleted)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task CreateAsync(Product product, CancellationToken cancellationToken)
@@ -45,6 +48,6 @@ public class ProductRepository:IBaseRepository<Product>
 
     public async Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Products.Where(a => !a.IsDeleted && a.CategoryId == categoryId).ToListAsync();
+        return await _dbContext.Products.Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
     }
 }
