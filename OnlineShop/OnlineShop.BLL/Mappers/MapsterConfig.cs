@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using OnlineShop.BLL.DTO.Requests;
+using OnlineShop.BLL.DTO.Responses;
 using OnlineShop.DAL.Entities.Implementations;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,23 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.BLL.Mappers
 {
-    internal class MapsterConfig
+    public class MapsterConfig: IRegister
     {
-        public static void Configure()
+        public void Register(TypeAdapterConfig config)
         {
-            TypeAdapterConfig<OrderItemRequestDTO, OrderItem>
-                .NewConfig()
-                .IgnoreNullValues(true);
+            config
+                .NewConfig<OrderItemRequestDTO, OrderItem>()
+                .IgnoreNullValues(true)
+                .RequireDestinationMemberSource(true);
+
+            config
+                .NewConfig<OrderItem, OrderItemResponseDTO>()
+                .IgnoreNullValues(true)
+                .RequireDestinationMemberSource(true)
+                .TwoWays();
+
+            config
+                .NewConfig<Product, ProductResponseDTO>();
         }
     }
 }

@@ -8,5 +8,6 @@ namespace OnlineShop.BLL.DTO.Responses
 {
     public class ProductResponseDTO
     {
+        public Guid Id { get; set; }
     }
 }

@@ -29,11 +29,11 @@ public class OrderItemService : IOrderItemService
         await _orderItemRepository.CreateAsync(orderItem);
     }
 
-    public async Task DeleteOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
+    public async Task DeleteOrderItemAsync(Guid id, CancellationToken token = default)
     {
-        var orderItem = await _orderItemRepository.GetByIdAsync(requestDTO.Id);
+        var orderItem = await _orderItemRepository.GetByIdAsync(id);
         if (orderItem == null)
-            throw new EntityNotFoundException(nameof(OrderItem), requestDTO.Id);
+            throw new EntityNotFoundException(nameof(OrderItem), id);
         await _orderItemRepository.DeleteAsync(orderItem, token);
     }
 
@@ -45,11 +45,11 @@ public class OrderItemService : IOrderItemService
         return _mapper.Map<IEnumerable<OrderItemResponseDTO>>(orderItemsCollection);
     }
 
-    public async Task<OrderItemResponseDTO> GetByIdAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
+    public async Task<OrderItemResponseDTO> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        var orderItem = await _orderItemRepository.GetByIdAsync(requestDTO.Id, token);
+        var orderItem = await _orderItemRepository.GetByIdAsync(id, token);
         if (orderItem == null)
-            throw new EntityNotFoundException(nameof(OrderItem), requestDTO.Id);
+            throw new EntityNotFoundException(nameof(OrderItem), id);
         return _mapper.Map<OrderItemResponseDTO>(orderItem);
     }
 
