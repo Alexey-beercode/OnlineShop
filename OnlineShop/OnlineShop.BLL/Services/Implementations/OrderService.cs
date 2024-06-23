@@ -2,7 +2,7 @@
 
 namespace OnlineShop.BLL.Services.Implementations;
 
-public class OrderService:IOrderService
+public class OrderService : IOrderService
 {
     
 }
