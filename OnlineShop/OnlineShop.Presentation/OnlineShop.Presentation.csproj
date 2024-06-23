@@ -8,8 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
       <Folder Include="DTOs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OnlineShop.BLL\OnlineShop.BLL.csproj" />
     </ItemGroup>
 
 </Project>

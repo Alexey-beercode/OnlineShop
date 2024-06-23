@@ -5,6 +5,7 @@ using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Mappers;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.BLL.Validators;
+using OnlineShop.Controllers;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;
 using OnlineShop.DAL.Repositories.Interfaces;
@@ -103,5 +104,58 @@ public class OrderService : IOrderService
         order.IsCancelled = true;
         await _orderRepository.UpdateAsync(order, cancellationToken);
     }
+    public async Task<IEnumerable<OrderResponseDTO>> GetAllAsync(CancellationToken token)
+    {
+        var orders = await _orderRepository.GetAllAsync(token);
+        return orders.Adapt<IEnumerable<OrderResponseDTO>>();
+    }
 
+    public async Task UpdateOrderAsync(Guid id, UpdateOrderRequestDTO updateOrderRequestDTO, CancellationToken cancellationToken)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            throw new EntityNotFoundException(nameof(Order), id);
+        }
+
+        var orderItems = new List<OrderItem>();
+        foreach (var orderItemRequestDTO in updateOrderRequestDTO.OrderItems)
+        {
+            //TODO: link with real realization
+            //var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
+            //if (product is null)
+            //{
+            //    throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
+            //}
+
+            //if (product.Quantity < orderItemRequestDTO.Quantity)
+            //{
+            //    throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
+            //}
+
+            //orderItems.Add(new OrderItem
+            //{
+            //    Product = product,
+            //    Quantity = orderItemRequestDTO.Quantity,
+            //    Price = product.Price
+            //});
+
+            //product.Quantity -= orderItemRequestDTO.Quantity;
+            //await _productRepository.UpdateAsync(product, cancellationToken);
+        }
+
+        order.OrderItems = orderItems;
+        await _orderRepository.UpdateAsync(order, cancellationToken);
+    }
+
+    public async Task DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            throw new EntityNotFoundException(nameof(Order), id);
+        }
+
+        await _orderRepository.DeleteAsync(order, cancellationToken);
+    }
 }
