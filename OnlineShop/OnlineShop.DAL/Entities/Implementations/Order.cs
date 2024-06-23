@@ -11,4 +11,6 @@ public class Order : IEntity
     public required User User { get; set; }
     public required ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public bool IsDeleted { get; set; }
+    public bool IsCancelled { get; set; }
+
 }
