@@ -25,6 +25,14 @@ public class UserController : Controller
         var user = await _userService.GetByIdAsync(id, cancellationToken);
         return TypedResults.Ok(user);
     }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IResult> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var users = await _userService.GetAllAsync(cancellationToken);
+        return TypedResults.Ok(users);
+    }
 
     [HttpPost]
     public async Task<IResult> Login([FromBody] LoginRequestDTO request, CancellationToken cancellationToken = default)

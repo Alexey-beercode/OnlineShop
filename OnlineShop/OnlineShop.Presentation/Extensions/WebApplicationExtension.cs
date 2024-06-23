@@ -1,6 +1,4 @@
-﻿
-
-namespace DwellEase.WebAPI.Extensions;
+﻿namespace OnlineShop.Extensions;
 
 public static class WebApplicationExtension
 {

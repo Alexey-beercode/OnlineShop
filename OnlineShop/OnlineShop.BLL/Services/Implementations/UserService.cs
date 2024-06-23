@@ -19,6 +19,12 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
+    public async Task<IEnumerable<UserResponseDTO>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var users = await _userRepository.GetAllAsync(cancellationToken);
+        return _mapper.Map<IEnumerable<UserResponseDTO>>(users);
+    }
+
     public async Task<UserResponseDTO> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
