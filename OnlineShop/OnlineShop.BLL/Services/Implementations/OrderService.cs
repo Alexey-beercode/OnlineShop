@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using MapsterMapper;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.Exceptions;
@@ -15,11 +16,10 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
     public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
     {
-        MapsterConfig.Configure();
-
         _orderRepository = orderRepository;
         _productRepository = productRepository;
     }
@@ -58,13 +58,13 @@ public class OrderService : IOrderService
         var order = new Order
         {
             OrderDate = DateTime.UtcNow,
-            User = createOrderRequestDTO.User.Adapt<User>(),
+            User = _mapper.Map<User>(createOrderRequestDTO.User),
             OrderItems = orderItems,
         };
 
         await _orderRepository.CreateAsync(order, cancellationToken);
 
-        var orderResponseDTO = order.Adapt<OrderResponseDTO>();
+        var orderResponseDTO = _mapper.Map<OrderResponseDTO>(order);
         return orderResponseDTO;
     }
 
@@ -72,7 +72,7 @@ public class OrderService : IOrderService
     {
         var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, cancellationToken);
 
-        var ordersResponseDTO = orders.Adapt<IEnumerable<OrderResponseDTO>>();
+        var ordersResponseDTO = _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
         return ordersResponseDTO;
     }
 
@@ -84,7 +84,7 @@ public class OrderService : IOrderService
             throw new EntityNotFoundException(nameof(Order), orderId);
         }
 
-        var orderResponseDTO = order.Adapt<OrderResponseDTO>();
+        var orderResponseDTO = _mapper.Map<OrderResponseDTO>(order);
         return orderResponseDTO;
     }
 
@@ -107,7 +107,7 @@ public class OrderService : IOrderService
     public async Task<IEnumerable<OrderResponseDTO>> GetAllAsync(CancellationToken token)
     {
         var orders = await _orderRepository.GetAllAsync(token);
-        return orders.Adapt<IEnumerable<OrderResponseDTO>>();
+        return _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
     }
 
     public async Task UpdateOrderAsync(Guid id, UpdateOrderRequestDTO updateOrderRequestDTO, CancellationToken cancellationToken)
