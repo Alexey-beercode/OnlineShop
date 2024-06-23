@@ -63,4 +63,12 @@ public class ProductService:IProductService
         return product.Adapt<ProductResponseDTO>();
 
     }
+
+    public async Task<ProductsCollectionResponseDTO> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
+    {
+        var category = await _categoryRepository.GetByIdAsync(categoryId) ?? throw new EntityNotFoundException("Category not found");
+        var productsByCategory = await _productRepository.GetByCategoryIdAsync(categoryId, cancellationToken);
+        var productResponseDTOs = _mapper.Map<IEnumerable<ProductResponseDTO>>(productsByCategory);
+        return new ProductsCollectionResponseDTO { Products = productResponseDTOs };
+    }
 }

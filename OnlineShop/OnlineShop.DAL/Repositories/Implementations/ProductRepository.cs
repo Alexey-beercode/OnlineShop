@@ -48,6 +48,8 @@ public class ProductRepository:IBaseRepository<Product>
 
     public async Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Products.Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
+        return await _dbContext.Products 
+            .Include(product => product.Category)
+            .Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
     }
 }
