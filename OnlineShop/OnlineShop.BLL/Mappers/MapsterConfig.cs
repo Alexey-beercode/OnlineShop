@@ -1,7 +1,8 @@
-﻿using Mapster;
+
+using Mapster;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
-//using OnlineShop.BLL.Helpers;
+using OnlineShop.BLL.Helpers;
 using OnlineShop.DAL.Entities.Implementations;
 
 namespace OnlineShop.BLL.Mappers;
@@ -20,5 +21,8 @@ public static class MapsterConfig
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.ProductId, src => src.ProductId)
             .Map(dest => dest.Quantity, src => src.Quantity);
+        TypeAdapterConfig<RegisterRequestDTO, User>.NewConfig();
+        TypeAdapterConfig<User, UserResponseDTO>.NewConfig();
+
     }
 }

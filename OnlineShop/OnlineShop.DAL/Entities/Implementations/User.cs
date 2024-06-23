@@ -6,11 +6,11 @@ public class User : IEntity
 {
     public Guid Id { get; set; }
     
-    public required string Login { get; set; }
-    public required string PasswordHash { get; set; }
+    public string Login { get; set; }
+    public string PasswordHash { get; set; }
     
-    public required string FirstName { get; set; }
-    public required string LastName { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     
-    public required bool IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }
