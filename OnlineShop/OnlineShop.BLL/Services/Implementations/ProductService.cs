@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.BLL.DTO.Responses;
-using OnlineShop.BLL.Services.Exceptions;
+using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;

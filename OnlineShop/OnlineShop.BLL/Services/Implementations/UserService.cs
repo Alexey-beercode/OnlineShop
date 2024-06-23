@@ -30,7 +30,7 @@ public class UserService : IUserService
         return _mapper.Map<UserResponseDTO>(user);
     }
 
-    public async Task LoginAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<User> LoginAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByLoginAsync(loginRequestDTO.Login, cancellationToken);
         if (user is null)
@@ -42,9 +42,11 @@ public class UserService : IUserService
         {
             throw new AuthenticationException("Login or password entered incorrectly.");
         }
+
+        return user;
     }
 
-    public async Task RegisterAsync(RegisterRequestDTO registerRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<User> RegisterAsync(RegisterRequestDTO registerRequestDTO, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByLoginAsync(registerRequestDTO.Login, cancellationToken);
         if (user is not null)
@@ -56,5 +58,7 @@ public class UserService : IUserService
         user.PasswordHash = PasswordHelper.HashPassword(registerRequestDTO.Password);
 
         await _userRepository.CreateAsync(user, cancellationToken);
+
+        return user;
     }
 }
