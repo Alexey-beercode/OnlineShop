@@ -1,6 +1,8 @@
 ﻿using Mapster;
+using MapsterMapper;
+using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.DTO.Responses;
-using OnlineShop.BLL.Services.Exceptions;
+using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;
@@ -10,10 +12,12 @@ namespace OnlineShop.BLL.Services.Implementations;
 public class CategoryService:ICategoryService
 {
     private readonly CategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
 
-    public CategoryService(CategoryRepository categoryRepository)
+    public CategoryService(CategoryRepository categoryRepository, IMapper mapper)
     {
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
     }
 
     public async Task CreateAsync(string categoryName, CancellationToken cancellationToken)

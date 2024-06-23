@@ -1,6 +1,6 @@
 ﻿using OnlineShop.DAL.Entities.Implementations;
 
-namespace OnlineShop.BLL.DTO.Responses;
+namespace OnlineShop.BLL.DTO.Response;
 
 public class CategoriesCollectionResponseDTO
 {

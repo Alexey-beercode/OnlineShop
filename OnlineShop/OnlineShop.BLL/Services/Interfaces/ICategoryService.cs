@@ -1,4 +1,5 @@
-﻿using OnlineShop.BLL.DTO.Responses;
+﻿using OnlineShop.BLL.DTO.Response;
+using OnlineShop.BLL.DTO.Responses;
 using OnlineShop.DAL.Entities.Implementations;
 
 namespace OnlineShop.BLL.Services.Interfaces;

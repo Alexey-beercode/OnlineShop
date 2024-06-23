@@ -2,6 +2,7 @@
 using Mapster;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
+using OnlineShop.BLL.DTO.Responses;
 using OnlineShop.BLL.Helpers;
 using OnlineShop.DAL.Entities.Implementations;
 
@@ -23,6 +24,10 @@ public static class MapsterConfig
             .Map(dest => dest.Quantity, src => src.Quantity);
         TypeAdapterConfig<RegisterRequestDTO, User>.NewConfig();
         TypeAdapterConfig<User, UserResponseDTO>.NewConfig();
+        TypeAdapterConfig<IEnumerable<Category>, CategoriesCollectionResponseDTO>.NewConfig();
+        TypeAdapterConfig<Category, CategoryResponseDTO>.NewConfig();
+        TypeAdapterConfig<IEnumerable<Product>, IEnumerable<ProductResponseDTO>>.NewConfig();
+        TypeAdapterConfig<Product, ProductResponseDTO>.NewConfig();
 
     }
 }

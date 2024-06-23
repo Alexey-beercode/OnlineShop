@@ -1,7 +1,9 @@
-﻿using Mapster;
+﻿using System.Collections;
+using Mapster;
+using MapsterMapper;
 using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.BLL.DTO.Responses;
-using OnlineShop.BLL.Services.Exceptions;
+using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;
@@ -12,17 +14,19 @@ public class ProductService:IProductService
 {
     private readonly ProductRepository _productRepository;
     private readonly CategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository)
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, IMapper mapper)
     {
         _productRepository = productRepository;
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
     }
 
     public async Task CreateAsync(ProductRequestDTO productRequestDto,CancellationToken cancellationToken = default)
     {
         var category = await _categoryRepository.GetByIdAsync(productRequestDto.CategoryId) ?? throw new EntityNotFoundException("Category not found");
-        var product = productRequestDto.Adapt<Product>();
+        var product = _mapper.Map<Product>(productRequestDto);
         await _productRepository.CreateAsync(product,cancellationToken);
     }
     
@@ -30,7 +34,7 @@ public class ProductService:IProductService
     {
         var product = await _productRepository.GetByIdAsync(productRequestDto.Id, cancellationToken)??throw new EntityNotFoundException("Product",productRequestDto.Id);
         var category = await _categoryRepository.GetByIdAsync(productRequestDto.CategoryId) ?? throw new EntityNotFoundException("Category not found");
-        var newProduct = productRequestDto.Adapt<Product>();
+        var newProduct = _mapper.Map<Product>(productRequestDto);
         await _productRepository.UpdateAsync(newProduct, cancellationToken);
     }
 
@@ -49,7 +53,7 @@ public class ProductService:IProductService
             return new ProductsCollectionResponseDTO { Products = new List<ProductResponseDTO>() };
         }
 
-        var productResponseDTOs = products.Adapt<IEnumerable<ProductResponseDTO>>();
+        var productResponseDTOs = _mapper.Map<IEnumerable<ProductResponseDTO>>(products);
         return new ProductsCollectionResponseDTO { Products = productResponseDTOs };
     }
 
