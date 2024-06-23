@@ -18,10 +18,11 @@ public class OrderService : IOrderService
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _mapper = mapper;
     }
 
     public async Task<OrderResponseDTO> CreateOrderAsync(CreateOrderRequestDTO createOrderRequestDTO, CancellationToken cancellationToken = default)
