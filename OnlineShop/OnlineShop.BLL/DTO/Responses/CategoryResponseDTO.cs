@@ -4,5 +4,6 @@ namespace OnlineShop.BLL.DTO.Responses;
 
 public class CategoryResponseDTO
 {
-    public Category Category { get; set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
 }

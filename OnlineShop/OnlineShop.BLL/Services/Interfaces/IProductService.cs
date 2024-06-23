@@ -10,4 +10,5 @@ public interface IProductService
     Task DeleteAsync(Guid id,CancellationToken cancellationToken);
     Task<ProductsCollectionResponseDTO> GetAllAsync(CancellationToken cancellationToken);
     Task<ProductResponseDTO> GetByIdAsync(Guid id,CancellationToken cancellationToken);
+    
 }

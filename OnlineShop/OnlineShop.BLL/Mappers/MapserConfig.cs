@@ -8,7 +8,5 @@ public static class MapsterConfig
 {
     public static void Configure()
     {
-        TypeAdapterConfig<string, Guid>.NewConfig()
-            .MapWith(src => StringToGuidMapper.ToGuid(src));
     }
 }
