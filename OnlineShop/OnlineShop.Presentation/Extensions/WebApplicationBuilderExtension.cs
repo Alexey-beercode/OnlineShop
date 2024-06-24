@@ -49,7 +49,6 @@ public static class WebApplicationBuilderExtension
     }
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         string? connectionString = builder.Configuration.GetConnectionString("ConnectionString");
         builder.Services.AddDbContext<ShopDbContext>(options => { options.UseNpgsql(connectionString); });
     }
