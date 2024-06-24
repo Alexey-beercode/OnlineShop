@@ -1,32 +1,27 @@
-﻿using Mapster;
-using OnlineShop.BLL.DTO.Requests;
-using OnlineShop.BLL.DTO.Responses;
+using Mapster;
+using OnlineShop.BLL.DTO.Request;
+using OnlineShop.BLL.DTO.Response;
+using OnlineShop.BLL.Helpers;
 using OnlineShop.DAL.Entities.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace OnlineShop.BLL.Mappers
+namespace OnlineShop.BLL.Mappers;
+
+public static class MapsterConfig
 {
-    public class MapsterConfig: IRegister
+    public static void Configure()
     {
-        public void Register(TypeAdapterConfig config)
-        {
-            config
-                .NewConfig<OrderItemRequestDTO, OrderItem>()
-                .IgnoreNullValues(true)
-                .RequireDestinationMemberSource(true);
+        TypeAdapterConfig<Order, OrderResponseDTO>.NewConfig()
+            .Map(dest => dest.Id, src => src.Id)
+            .Map(dest => dest.OrderDate, src => src.OrderDate)
+            .Map(dest => dest.User, src => src.User.Adapt<UserResponseDTO>())
+            .Map(dest => dest.OrderItems, src => src.OrderItems.Adapt<List<OrderItemResponseDTO>>());
 
-            config
-                .NewConfig<OrderItem, OrderItemResponseDTO>()
-                .IgnoreNullValues(true)
-                .RequireDestinationMemberSource(true)
-                .TwoWays();
+        TypeAdapterConfig<OrderItem, OrderItemResponseDTO>.NewConfig()
+            .Map(dest => dest.Id, src => src.Id)
+            .Map(dest => dest.ProductId, src => src.ProductId)
+            .Map(dest => dest.Quantity, src => src.Quantity);
+        TypeAdapterConfig<RegisterRequestDTO, User>.NewConfig();
+        TypeAdapterConfig<User, UserResponseDTO>.NewConfig();
 
-            config
-                .NewConfig<Product, ProductResponseDTO>();
-        }
     }
 }
