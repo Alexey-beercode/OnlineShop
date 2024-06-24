@@ -1,10 +1,12 @@
 ﻿using Mapster;
+using MapsterMapper;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Mappers;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.BLL.Validators;
+using OnlineShop.Controllers;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;
 using OnlineShop.DAL.Repositories.Interfaces;
@@ -14,13 +16,13 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
     {
-        MapsterConfig.Configure();
-
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _mapper = mapper;
     }
 
     public async Task<OrderResponseDTO> CreateOrderAsync(CreateOrderRequestDTO createOrderRequestDTO, CancellationToken cancellationToken = default)
@@ -57,13 +59,13 @@ public class OrderService : IOrderService
         var order = new Order
         {
             OrderDate = DateTime.UtcNow,
-            User = createOrderRequestDTO.User.Adapt<User>(),
+            User = _mapper.Map<User>(createOrderRequestDTO.User),
             OrderItems = orderItems,
         };
 
         await _orderRepository.CreateAsync(order, cancellationToken);
 
-        var orderResponseDTO = order.Adapt<OrderResponseDTO>();
+        var orderResponseDTO = _mapper.Map<OrderResponseDTO>(order);
         return orderResponseDTO;
     }
 
@@ -71,7 +73,7 @@ public class OrderService : IOrderService
     {
         var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, cancellationToken);
 
-        var ordersResponseDTO = orders.Adapt<IEnumerable<OrderResponseDTO>>();
+        var ordersResponseDTO = _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
         return ordersResponseDTO;
     }
 
@@ -83,7 +85,7 @@ public class OrderService : IOrderService
             throw new EntityNotFoundException(nameof(Order), orderId);
         }
 
-        var orderResponseDTO = order.Adapt<OrderResponseDTO>();
+        var orderResponseDTO = _mapper.Map<OrderResponseDTO>(order);
         return orderResponseDTO;
     }
 
@@ -103,5 +105,58 @@ public class OrderService : IOrderService
         order.IsCancelled = true;
         await _orderRepository.UpdateAsync(order, cancellationToken);
     }
+    public async Task<IEnumerable<OrderResponseDTO>> GetAllAsync(CancellationToken token)
+    {
+        var orders = await _orderRepository.GetAllAsync(token);
+        return _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
+    }
 
+    public async Task UpdateOrderAsync(Guid id, UpdateOrderRequestDTO updateOrderRequestDTO, CancellationToken cancellationToken)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            throw new EntityNotFoundException(nameof(Order), id);
+        }
+
+        var orderItems = new List<OrderItem>();
+        foreach (var orderItemRequestDTO in updateOrderRequestDTO.OrderItems)
+        {
+            //TODO: link with real realization
+            //var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
+            //if (product is null)
+            //{
+            //    throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
+            //}
+
+            //if (product.Quantity < orderItemRequestDTO.Quantity)
+            //{
+            //    throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
+            //}
+
+            //orderItems.Add(new OrderItem
+            //{
+            //    Product = product,
+            //    Quantity = orderItemRequestDTO.Quantity,
+            //    Price = product.Price
+            //});
+
+            //product.Quantity -= orderItemRequestDTO.Quantity;
+            //await _productRepository.UpdateAsync(product, cancellationToken);
+        }
+
+        order.OrderItems = orderItems;
+        await _orderRepository.UpdateAsync(order, cancellationToken);
+    }
+
+    public async Task DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
+        if (order is null)
+        {
+            throw new EntityNotFoundException(nameof(Order), id);
+        }
+
+        await _orderRepository.DeleteAsync(order, cancellationToken);
+    }
 }

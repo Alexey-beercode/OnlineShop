@@ -11,11 +11,11 @@ namespace OnlineShop.DAL.Infrastructure
 {
     public class ShopDbContext : DbContext
     {
-        public DbSet<Category> Categories = null!;
-        public DbSet<User> Users = null!;
-        public DbSet<Order> Orders = null!;
-        public DbSet<OrderItem> OrderItems = null!;
-        public DbSet<Product> Products = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Product> Products { get; set; } = null!;
 
         public ShopDbContext(DbContextOptions<ShopDbContext> options)
             : base(options)
@@ -24,7 +24,6 @@ namespace OnlineShop.DAL.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //set up your entity configs
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());

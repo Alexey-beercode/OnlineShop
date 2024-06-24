@@ -1,5 +1,3 @@
-﻿
-
 namespace OnlineShop.Extensions;
 
 public static class WebApplicationExtension
