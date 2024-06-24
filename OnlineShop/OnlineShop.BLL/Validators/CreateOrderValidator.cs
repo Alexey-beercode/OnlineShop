@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using OnlineShop.BLL.DTO.Request;
-using OnlineShop.DAL.Entities.Validators;
 using OnlineShop.DAL.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;

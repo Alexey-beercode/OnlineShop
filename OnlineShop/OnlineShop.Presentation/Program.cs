@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using OnlineShop.DAL.Infrastructure;
 using OnlineShop.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

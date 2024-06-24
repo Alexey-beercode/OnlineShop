@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Extensions;
+namespace OnlineShop.Extensions;
 
 public static class WebApplicationExtension
 {
@@ -20,7 +20,10 @@ public static class WebApplicationExtension
     
     public static void AddSwagger(this WebApplication app)
     {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
     }
 }

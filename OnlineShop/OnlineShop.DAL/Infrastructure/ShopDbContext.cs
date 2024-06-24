@@ -20,8 +20,6 @@ namespace OnlineShop.DAL.Infrastructure
         public ShopDbContext(DbContextOptions<ShopDbContext> options)
             : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
