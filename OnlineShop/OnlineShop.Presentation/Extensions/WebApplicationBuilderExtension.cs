@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OnlineShop.BLL.Entities.Validators;
 using OnlineShop.BLL.Services.Implementations;
 using OnlineShop.BLL.Services.Interfaces;
+using OnlineShop.BLL.Validators;
 using OnlineShop.DAL.Entities.Implementations;
-using OnlineShop.DAL.Entities.Validators;
 using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Implementations;
 using OnlineShop.DAL.Repositories.Interfaces;
@@ -45,6 +46,12 @@ public static class WebApplicationBuilderExtension
     {
         builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         builder.Services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<OrderItemRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<ProductUpdateValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
         
     }
     public static void AddDatabase(this WebApplicationBuilder builder)
