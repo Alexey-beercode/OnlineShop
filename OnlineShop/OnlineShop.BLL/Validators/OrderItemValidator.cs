@@ -1,20 +1,20 @@
 ﻿using FluentValidation;
+using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Repositories.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.DAL.Entities.Validators
+namespace OnlineShop.BLL.Entities.Validators
 {
-    public class OrderItemValidator : AbstractValidator<OrderItem>
+    public class OrderItemValidator : AbstractValidator<OrderItemRequestDTO>
     {
         public OrderItemValidator()
         {
-            RuleFor(oi => oi.Id).NotNull().WithMessage("Id is empty");
-            RuleFor(oi => oi.OrderId).NotNull().WithMessage("OrderId is empty");
-            RuleFor(oi => oi.ProductId).NotNull().WithMessage("ProductId is empty");
+            RuleFor(oi => oi.Id).NotEmpty().WithMessage("Id is empty");
             RuleFor(oi => oi.Quantity).GreaterThanOrEqualTo(0).WithMessage("Quantity can't be less than zero");
         }
     }

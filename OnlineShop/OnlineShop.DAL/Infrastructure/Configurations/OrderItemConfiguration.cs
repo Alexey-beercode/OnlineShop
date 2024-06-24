@@ -14,6 +14,7 @@ namespace OnlineShop.DAL.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder.ToTable("OrderItems");
+            builder.Property(oi => oi.Quantity).IsRequired();
 
             builder.HasQueryFilter(oi => oi.IsDeleted == false);
 
@@ -21,6 +22,11 @@ namespace OnlineShop.DAL.Infrastructure.Configurations
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
