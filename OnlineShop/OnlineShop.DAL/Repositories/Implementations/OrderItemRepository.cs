@@ -18,12 +18,18 @@ public class OrderItemRepository : IBaseRepository<OrderItem>
 
     public async Task<OrderItem> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.OrderItems.SingleAsync(oi => oi.Id == id, cancellationToken);
+        var result = await _context.OrderItems
+                                        .Include(oi => oi.Product)
+                                        .SingleAsync(oi => oi.Id == id, cancellationToken);
+        return result;
     }
 
     public async Task<IEnumerable<OrderItem>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.OrderItems.ToListAsync(cancellationToken);
+        var result = await _context.OrderItems
+                                        .Include(oi => oi.Product)
+                                        .ToListAsync(cancellationToken);
+        return result;
     }
 
     public async Task CreateAsync(OrderItem entity, CancellationToken cancellationToken = default)

@@ -1,45 +1,17 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
-using OnlineShop.BLL.Entities.Validators;
-using OnlineShop.BLL.Services.Implementations;
-using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.DAL.Infrastructure;
-using System.Reflection;
+using OnlineShop.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
-
-builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-//TODO: Change way to check assembly without using certain validator class
-builder.Services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
-
-builder.Services.AddDbContext<ShopDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDatabase")));
-
-builder.Services.AddSwaggerGen();
-
-
-TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
-builder.Services.AddMapster();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IOrderItemService, OrderItemService>();
-
+builder.AddAuthentication();
+builder.AddDatabase();
+builder.AddMapping();
+builder.AddServices();
+builder.AddValidation();
+builder.AddSwaggerDocumentation();
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.MapControllers();
+app.AddSwagger();
+app.AddApplicationMiddleware();
+app.MapGet("/", () => "Hello World!");
 
 app.Run();

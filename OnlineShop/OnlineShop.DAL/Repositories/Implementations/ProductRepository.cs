@@ -1,32 +1,55 @@
-﻿using OnlineShop.DAL.Entities.Implementations;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
 public class ProductRepository:IBaseRepository<Product>
 {
-    public Task CreateAsync(Product entity, CancellationToken cancellationToken = default)
+    private readonly ShopDbContext _dbContext;
+
+    public ProductRepository(ShopDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public Task DeleteAsync(Product entity, CancellationToken cancellationToken = default)
+    public async Task<Product> GetByIdAsync(Guid id,CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Products.FindAsync(id, cancellationToken);
     }
 
-    public Task UpdateAsync(Product entity, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .Where(p => !p.IsDeleted)
+            .ToListAsync(cancellationToken);
     }
 
-    public Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Product product, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await _dbContext.Products.AddAsync(product, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Product product, CancellationToken cancellationToken)
+    { 
+        _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Product product, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        product.IsDeleted = true;
+        _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Products 
+            .Include(product => product.Category)
+            .Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
     }
 }
