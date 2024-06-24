@@ -24,11 +24,13 @@ public static class WebApplicationBuilderExtension
     {
         builder.Services.AddControllers();
         builder.Services.AddScoped<ITokenService, TokenService>();
+        
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<IBaseRepository<OrderItem>, OrderItemRepository>();
-        builder.Services.AddScoped<IBaseRepository<Product>, ProductRepository>();
-        builder.Services.AddScoped<IBaseRepository<Category>, CategoryRepository>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IOrderService, OrderService>();
         builder.Services.AddScoped<IOrderItemService, OrderItemService>();

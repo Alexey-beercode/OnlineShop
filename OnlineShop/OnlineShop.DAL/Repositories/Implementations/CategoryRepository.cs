@@ -6,7 +6,7 @@ using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class CategoryRepository : IBaseRepository<Category>
+public class CategoryRepository : ICategoryRepository
 {
     private readonly ShopDbContext _dbContext;
 
@@ -25,8 +25,7 @@ public class CategoryRepository : IBaseRepository<Category>
         return await _dbContext.Categories.Where(a => !a.IsDeleted).ToListAsync(cancellationToken);
     }
 
-    public async Task CreateAsync(Category category,
-        CancellationToken cancellationToken = default)
+    public async Task CreateAsync(Category category, CancellationToken cancellationToken = default)
     {
         await _dbContext.Categories.AddAsync(category, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);

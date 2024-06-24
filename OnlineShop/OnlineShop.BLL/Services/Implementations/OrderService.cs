@@ -33,27 +33,31 @@ public class OrderService : IOrderService
         var orderItems = new List<OrderItem>();
         foreach (var orderItemRequestDTO in createOrderRequestDTO.OrderItems)
         {
-            //TODO: link with real realization
-            //var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
-            //if (product is null)
-            //{
-            //    throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
-            //}
+            var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
+            if (product is null)
+            {
+                throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
+            }
 
-            //if (product.Quantity < orderItemRequestDTO.Quantity)
-            //{
-            //    throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
-            //}
+            //TODO: Product has no quantity field
+            /*if (product.Quantity < orderItemRequestDTO.Quantity)
+            {
+                throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
+            }*/
 
-            //orderItems.Add(new OrderItem
-            //{
-            //    Product = product,
-            //    Quantity = orderItemRequestDTO.Quantity,
-            //    Price = product.Price
-            //});
+            orderItems.Add(new OrderItem
+            {
+                Product = product,
+                Quantity = orderItemRequestDTO.Quantity,
+                
+                //TODO: OrderItem has no price field
+                /*Price = product.Price*/
+            });
 
-            //product.Quantity -= orderItemRequestDTO.Quantity;
-            //await _productRepository.UpdateAsync(product, cancellationToken);
+            //TODO: Product has no quantity field
+            /*product.Quantity -= orderItemRequestDTO.Quantity;*/
+            
+            await _productRepository.UpdateAsync(product, cancellationToken);
         }
 
         var order = new Order
@@ -122,27 +126,30 @@ public class OrderService : IOrderService
         var orderItems = new List<OrderItem>();
         foreach (var orderItemRequestDTO in updateOrderRequestDTO.OrderItems)
         {
-            //TODO: link with real realization
-            //var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
-            //if (product is null)
-            //{
-            //    throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
-            //}
+            var product = await _productRepository.GetByIdAsync(orderItemRequestDTO.ProductId, cancellationToken);
+            if (product is null)
+            {
+                throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
+            }
 
-            //if (product.Quantity < orderItemRequestDTO.Quantity)
-            //{
-            //    throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
-            //}
+            //TODO: Product has no quantity field
+            /*if (product.Quantity < orderItemRequestDTO.Quantity)
+            {
+                throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
+            }*/
 
-            //orderItems.Add(new OrderItem
-            //{
-            //    Product = product,
-            //    Quantity = orderItemRequestDTO.Quantity,
-            //    Price = product.Price
-            //});
+            orderItems.Add(new OrderItem
+            {
+                Product = product,
+                Quantity = orderItemRequestDTO.Quantity,
+                
+                //TODO: OrderItem has no price field
+                /*Price = product.Price*/
+            });
 
-            //product.Quantity -= orderItemRequestDTO.Quantity;
-            //await _productRepository.UpdateAsync(product, cancellationToken);
+            //TODO: Product has no quantity field
+            /*product.Quantity -= orderItemRequestDTO.Quantity;*/
+            await _productRepository.UpdateAsync(product, cancellationToken);
         }
 
         order.OrderItems = orderItems;

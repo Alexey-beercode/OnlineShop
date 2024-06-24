@@ -26,7 +26,7 @@ namespace OnlineShop.DAL.Infrastructure.Configurations
 
             builder.HasOne(o => o.User)
                 .WithMany()
-                .HasForeignKey(o => o.User.Id)
+                .HasForeignKey(o => o.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 

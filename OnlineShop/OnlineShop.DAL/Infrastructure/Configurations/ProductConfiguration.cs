@@ -31,7 +31,7 @@ namespace OnlineShop.DAL.Infrastructure.Configurations
 
             builder.HasOne(p => p.Category)
                 .WithMany()
-                .HasForeignKey("CategoryId") // Use a shadow property
+                .HasForeignKey(p => p.CategoryId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
         }

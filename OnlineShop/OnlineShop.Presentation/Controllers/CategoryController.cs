@@ -6,7 +6,7 @@ namespace OnlineShop.Controllers;
 
 [Route("category")]
 [ApiController]
-public class CategoryController:Controller
+public class CategoryController : Controller
 {
     private readonly ICategoryService _categoryService;
 
