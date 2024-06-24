@@ -33,4 +33,8 @@
       <ProjectReference Include="..\OnlineShop.BLL\OnlineShop.BLL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OnlineShop.BLL\OnlineShop.BLL.csproj" />
+    </ItemGroup>
+
 </Project>
