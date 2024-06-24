@@ -46,7 +46,7 @@ namespace OnlineShop.BLL.Validators
             foreach (var orderItem in orderItems)
             {
                 var product = products.FirstOrDefault(p => p.Id == orderItem.ProductId);
-                if (product is null || product.Quantity < orderItem.Quantity)
+                if (product is null )
                 {
                     return false;
                 }
