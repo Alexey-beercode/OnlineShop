@@ -18,7 +18,7 @@ public class UserController : Controller
         _tokenService = tokenService;
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("get/{id:guid}")]
     [Authorize]
     public async Task<IResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
@@ -26,7 +26,7 @@ public class UserController : Controller
         return TypedResults.Ok(user);
     }
     
-    [HttpGet]
+    [HttpGet("get-all")]
     [Authorize]
     public async Task<IResult> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -34,7 +34,7 @@ public class UserController : Controller
         return TypedResults.Ok(users);
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IResult> Login([FromBody] LoginRequestDTO request, CancellationToken cancellationToken = default)
     {
         var user = await _userService.LoginAsync(request, cancellationToken);
@@ -43,7 +43,7 @@ public class UserController : Controller
         return TypedResults.Ok(token);
     }
     
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IResult> Register([FromBody] RegisterRequestDTO request, CancellationToken cancellationToken = default)
     {
         var user = await _userService.RegisterAsync(request, cancellationToken);
