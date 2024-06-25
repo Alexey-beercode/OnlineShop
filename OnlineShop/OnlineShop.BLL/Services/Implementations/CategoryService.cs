@@ -6,15 +6,16 @@ using OnlineShop.BLL.Exceptions;
 using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.DAL.Entities.Implementations;
 using OnlineShop.DAL.Repositories.Implementations;
+using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.BLL.Services.Implementations;
 
-public class CategoryService:ICategoryService
+public class CategoryService : ICategoryService
 {
-    private readonly CategoryRepository _categoryRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
 
-    public CategoryService(CategoryRepository categoryRepository, IMapper mapper)
+    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
     {
         _categoryRepository = categoryRepository;
         _mapper = mapper;
@@ -33,13 +34,13 @@ public class CategoryService:ICategoryService
     public async Task<CategoriesCollectionResponseDTO> GetAllAsync(CancellationToken cancellationToken)
     {
         var categories = await _categoryRepository.GetAllAsync(cancellationToken);
-        return categories.Adapt<CategoriesCollectionResponseDTO>();
+        return _mapper.Map<CategoriesCollectionResponseDTO>(categories); 
     }
 
     public async Task<CategoryResponseDTO> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken)?? throw new EntityNotFoundException("Category",id);
-        return category.Adapt<CategoryResponseDTO>();
+        return _mapper.Map<CategoryResponseDTO>(category);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)

@@ -5,7 +5,7 @@ using OnlineShop.DAL.Repositories.Interfaces;
 
 namespace OnlineShop.DAL.Repositories.Implementations;
 
-public class ProductRepository:IBaseRepository<Product>
+public class ProductRepository : IProductRepository
 {
     private readonly ShopDbContext _dbContext;
 
@@ -51,5 +51,10 @@ public class ProductRepository:IBaseRepository<Product>
         return await _dbContext.Products 
             .Include(product => product.Category)
             .Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
+    }
+
+    public Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

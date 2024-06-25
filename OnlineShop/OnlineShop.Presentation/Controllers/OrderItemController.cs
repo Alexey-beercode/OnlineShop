@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.BLL.DTO.Responses;
 using OnlineShop.BLL.Services.Interfaces;
