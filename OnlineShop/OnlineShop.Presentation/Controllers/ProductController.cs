@@ -5,7 +5,7 @@ using OnlineShop.BLL.Services.Interfaces;
 
 namespace OnlineShop.Controllers;
 
-[Route("product")]
+[Route("/api/product")]
 [ApiController]
 public class ProductController:Controller
 {
@@ -38,7 +38,7 @@ public class ProductController:Controller
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync(ProductRequestDTO productRequestDto)
+    public async Task<IActionResult> CreateAsync([FromBody]ProductRequestDTO productRequestDto)
     {
         await _productService.CreateAsync(productRequestDto, default);
         return Ok();
@@ -46,7 +46,7 @@ public class ProductController:Controller
 
     [Authorize]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync(ProductUpdateRequestDTO productUpdateRequestDto)
+    public async Task<IActionResult> UpdateAsync([FromBody]ProductUpdateRequestDTO productUpdateRequestDto)
     {
         await _productService.UpdateAsync(productUpdateRequestDto, default);
         return Ok();

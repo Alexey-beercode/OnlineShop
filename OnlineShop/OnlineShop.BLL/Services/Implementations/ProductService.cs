@@ -35,8 +35,10 @@ public class ProductService:IProductService
     {
         var product = await _productRepository.GetByIdAsync(productRequestDto.Id, cancellationToken)??throw new EntityNotFoundException("Product",productRequestDto.Id);
         var category = await _categoryRepository.GetByIdAsync(productRequestDto.CategoryId) ?? throw new EntityNotFoundException("Category not found");
-        var newProduct = _mapper.Map<Product>(productRequestDto);
-        await _productRepository.UpdateAsync(newProduct, cancellationToken);
+        _mapper.Map<Product>(productRequestDto);
+        product.CategoryId = productRequestDto.CategoryId;
+
+        await _productRepository.UpdateAsync(product, cancellationToken);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -45,17 +47,17 @@ public class ProductService:IProductService
         await _productRepository.DeleteAsync(product, cancellationToken);
     }
 
-    public async Task<ProductsCollectionResponseDTO> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<ProductResponseDTO>> GetAllAsync(CancellationToken cancellationToken)
     {
         var products = await _productRepository.GetAllAsync(cancellationToken);
 
-        if (products == null || !products.Any())
+        var productResponseDTOs = new List<ProductResponseDTO>();
+        foreach (var product in products)
         {
-            return new ProductsCollectionResponseDTO { Products = new List<ProductResponseDTO>() };
+            productResponseDTOs.Add(_mapper.Map<ProductResponseDTO>(product));
         }
 
-        var productResponseDTOs = _mapper.Map<IEnumerable<ProductResponseDTO>>(products);
-        return new ProductsCollectionResponseDTO { Products = productResponseDTOs };
+        return productResponseDTOs;
     }
 
     public async Task<ProductResponseDTO> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -65,11 +67,16 @@ public class ProductService:IProductService
 
     }
 
-    public async Task<ProductsCollectionResponseDTO> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ProductResponseDTO>> GetByCategoryIdAsync(Guid categoryId, CancellationToken cancellationToken)
     {
         var category = await _categoryRepository.GetByIdAsync(categoryId) ?? throw new EntityNotFoundException("Category not found");
         var productsByCategory = await _productRepository.GetByCategoryIdAsync(categoryId, cancellationToken);
-        var productResponseDTOs = _mapper.Map<IEnumerable<ProductResponseDTO>>(productsByCategory);
-        return new ProductsCollectionResponseDTO { Products = productResponseDTOs };
+        var productResponseDTOs = new List<ProductResponseDTO>();
+        foreach (var product in productsByCategory)
+        {
+            productResponseDTOs.Add(_mapper.Map<ProductResponseDTO>(product));
+        }
+
+        return productResponseDTOs;
     }
 }
