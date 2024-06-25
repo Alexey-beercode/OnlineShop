@@ -37,6 +37,9 @@ public class ExceptionHandlingMiddleware
             case EntityNotFoundException entityNotFoundException:
                 response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
+            case FormatException formatException:
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                break;
             case ValidationException validationException:
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 break;
