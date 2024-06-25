@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OnlineShop.BLL.Entities.Validators;
 using OnlineShop.BLL.Services.Implementations;
 using OnlineShop.BLL.Services.Interfaces;
@@ -24,19 +25,18 @@ public static class WebApplicationBuilderExtension
     {
         builder.Services.AddControllers();
         builder.Services.AddScoped<ITokenService, TokenService>();
-        
+
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<IBaseRepository<OrderItem>, OrderItemRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-        
+
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IOrderService, OrderService>();
         builder.Services.AddScoped<IOrderItemService, OrderItemService>();
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddScoped<ICategoryService, CategoryService>();
-        
     }
 
     public static void AddMapping(this WebApplicationBuilder builder)
@@ -44,9 +44,12 @@ public static class WebApplicationBuilderExtension
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
         builder.Services.AddMapster();
     }
+
     public static void AddValidation(this WebApplicationBuilder builder)
     {
-        builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+        builder
+            .Services.AddFluentValidationAutoValidation()
+            .AddFluentValidationClientsideAdapters();
         builder.Services.AddValidatorsFromAssemblyContaining<OrderItemValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<LoginValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<OrderItemRequestValidator>();
@@ -54,12 +57,15 @@ public static class WebApplicationBuilderExtension
         builder.Services.AddValidatorsFromAssemblyContaining<ProductUpdateValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
-        
     }
+
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
         string? connectionString = builder.Configuration.GetConnectionString("ConnectionString");
-        builder.Services.AddDbContext<ShopDbContext>(options => { options.UseNpgsql(connectionString); });
+        builder.Services.AddDbContext<ShopDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+        });
     }
 
     public static void AddAuthentication(this WebApplicationBuilder builder)
@@ -70,34 +76,68 @@ public static class WebApplicationBuilderExtension
         var issuer = jwtSettings["Issuer"];
         var audience = jwtSettings["Audience"];
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new TokenValidationParameters
+        builder
+            .Services.AddAuthentication(options =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = issuer,
-                ValidAudience = audience,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-            };
-        });
-        builder.Services.AddAuthorization(options => options.DefaultPolicy =
-            new AuthorizationPolicyBuilder
-                    (JwtBearerDefaults.AuthenticationScheme)
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                };
+            });
+        builder.Services.AddAuthorization(options =>
+            options.DefaultPolicy = new AuthorizationPolicyBuilder(
+                JwtBearerDefaults.AuthenticationScheme
+            )
                 .RequireAuthenticatedUser()
-                .Build());
+                .Build()
+        );
     }
-    
+
     public static void AddSwaggerDocumentation(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition(
+                "Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Description = @"Enter JWT Token please.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                }
+            );
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                        },
+                        new List<string>()
+                    }
+                }
+            );
+        });
     }
 }

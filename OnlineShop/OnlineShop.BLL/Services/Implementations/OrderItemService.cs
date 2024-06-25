@@ -18,9 +18,9 @@ public class OrderItemService : IOrderItemService
 {
     private readonly IBaseRepository<OrderItem> _orderItemRepository;
     private readonly IMapper _mapper;
-    public OrderItemService(ShopDbContext context, IMapper mapper)
+    public OrderItemService(IBaseRepository<OrderItem> repository, IMapper mapper)
     {
-        _orderItemRepository = new OrderItemRepository(context);
+        _orderItemRepository = repository;
         _mapper = mapper;
     }
     public async Task CreateOrderItemAsync(OrderItemRequestDTO requestDTO, CancellationToken token = default)
