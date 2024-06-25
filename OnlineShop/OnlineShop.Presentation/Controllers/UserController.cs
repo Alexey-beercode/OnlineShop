@@ -51,4 +51,12 @@ public class UserController : Controller
         var token = _tokenService.GenerateAccessToken(user);
         return TypedResults.Ok(token);
     }
+    
+    [HttpDelete("delete/{id:guid}")]
+    [Authorize]
+    public async Task<IResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken = default)
+    {
+        await _userService.DeleteAsync(id, cancellationToken);
+        return TypedResults.Ok();
+    }
 }
