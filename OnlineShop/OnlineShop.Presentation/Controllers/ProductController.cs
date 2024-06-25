@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.BLL.Services.Interfaces;
 
@@ -35,6 +36,7 @@ public class ProductController:Controller
         return Ok(products);
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync(ProductRequestDTO productRequestDto)
     {
@@ -42,6 +44,7 @@ public class ProductController:Controller
         return Ok();
     }
 
+    [Authorize]
     [HttpPut("update")]
     public async Task<IActionResult> UpdateAsync(ProductUpdateRequestDTO productUpdateRequestDto)
     {
@@ -49,6 +52,7 @@ public class ProductController:Controller
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {

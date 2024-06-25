@@ -11,5 +11,4 @@ var app = builder.Build();
 app.AddSwagger();
 app.AddApplicationMiddleware();
 app.MapGet("/", () => "Hello World!");
-
 app.Run();

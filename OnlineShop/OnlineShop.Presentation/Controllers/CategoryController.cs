@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.BLL.Services.Interfaces;
 
@@ -28,7 +29,8 @@ public class CategoryController : Controller
         var categories = await _categoryService.GetAllAsync(default);
         return Ok(categories);
     }
-
+    
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync(string categoryName)
     {
@@ -36,6 +38,7 @@ public class CategoryController : Controller
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
