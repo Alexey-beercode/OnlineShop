@@ -53,8 +53,4 @@ public class ProductRepository : IProductRepository
             .Where(product => !product.IsDeleted && product.Category.Id == categoryId).ToListAsync();
     }
 
-    public Task<IEnumerable<Product>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 }

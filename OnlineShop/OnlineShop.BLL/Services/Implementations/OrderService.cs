@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.Exceptions;
@@ -8,6 +9,7 @@ using OnlineShop.BLL.Services.Interfaces;
 using OnlineShop.BLL.Validators;
 using OnlineShop.Controllers;
 using OnlineShop.DAL.Entities.Implementations;
+using OnlineShop.DAL.Infrastructure;
 using OnlineShop.DAL.Repositories.Implementations;
 using OnlineShop.DAL.Repositories.Interfaces;
 namespace OnlineShop.BLL.Services.Implementations;
@@ -17,12 +19,15 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly ShopDbContext _context;
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
+
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper, ShopDbContext context)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _mapper = mapper;
+        _context = context;
     }
 
     public async Task<OrderResponseDTO> CreateOrderAsync(CreateOrderRequestDTO createOrderRequestDTO, CancellationToken cancellationToken = default)
@@ -30,6 +35,7 @@ public class OrderService : IOrderService
         CreateOrderValidator createOrderValidator = new CreateOrderValidator(_productRepository);
         await createOrderValidator.ValidateAndThrowAsync(createOrderRequestDTO, cancellationToken);
 
+        var updatedProducts = new Dictionary<Guid, Product>();
         var orderItems = new List<OrderItem>();
         foreach (var orderItemRequestDTO in createOrderRequestDTO.OrderItems)
         {
@@ -39,35 +45,28 @@ public class OrderService : IOrderService
                 throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
             }
 
-            //TODO: Product has no quantity field
-            /*if (product.Quantity < orderItemRequestDTO.Quantity)
-            {
-                throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
-            }*/
+            orderItems.Add(_mapper.Map<OrderItem>(orderItemRequestDTO));
+            orderItems.Last().Product = product;
 
-            orderItems.Add(new OrderItem
-            {
-                Product = product,
-                Quantity = orderItemRequestDTO.Quantity,
-                
-                //TODO: OrderItem has no price field
-                /*Price = product.Price*/
-            });
-
-            //TODO: Product has no quantity field
-            /*product.Quantity -= orderItemRequestDTO.Quantity;*/
-            
-            await _productRepository.UpdateAsync(product, cancellationToken);
+            // Save updated product to dictionary
+            updatedProducts[product.Id] = product;
         }
 
         var order = new Order
         {
             OrderDate = DateTime.UtcNow,
-            User = _mapper.Map<User>(createOrderRequestDTO.User),
+            UserId = createOrderRequestDTO.UserId,
             OrderItems = orderItems,
         };
 
         await _orderRepository.CreateAsync(order, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        // Update products after order creation
+        foreach (var updatedProduct in updatedProducts.Values)
+        {
+            await _productRepository.UpdateAsync(updatedProduct, cancellationToken);
+        }
 
         var orderResponseDTO = _mapper.Map<OrderResponseDTO>(order);
         return orderResponseDTO;
@@ -123,6 +122,7 @@ public class OrderService : IOrderService
             throw new EntityNotFoundException(nameof(Order), id);
         }
 
+        var updatedProducts = new Dictionary<Guid, Product>();
         var orderItems = new List<OrderItem>();
         foreach (var orderItemRequestDTO in updateOrderRequestDTO.OrderItems)
         {
@@ -132,28 +132,21 @@ public class OrderService : IOrderService
                 throw new EntityNotFoundException(nameof(Product), orderItemRequestDTO.ProductId);
             }
 
-            //TODO: Product has no quantity field
-            /*if (product.Quantity < orderItemRequestDTO.Quantity)
-            {
-                throw new ValidationException($"Not enough {product.Name} in stock. Available: {product.Quantity}.");
-            }*/
+            orderItems.Add(_mapper.Map<OrderItem>(orderItemRequestDTO));
+            orderItems.Last().Product = product;
 
-            orderItems.Add(new OrderItem
-            {
-                Product = product,
-                Quantity = orderItemRequestDTO.Quantity,
-                
-                //TODO: OrderItem has no price field
-                /*Price = product.Price*/
-            });
-
-            //TODO: Product has no quantity field
-            /*product.Quantity -= orderItemRequestDTO.Quantity;*/
-            await _productRepository.UpdateAsync(product, cancellationToken);
+            // Save updated product to dictionary
+            updatedProducts[product.Id] = product;
         }
 
         order.OrderItems = orderItems;
         await _orderRepository.UpdateAsync(order, cancellationToken);
+
+        // Update products after order creation
+        foreach (var updatedProduct in updatedProducts.Values)
+        {
+            await _productRepository.UpdateAsync(updatedProduct, cancellationToken);
+        }
     }
 
     public async Task DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
