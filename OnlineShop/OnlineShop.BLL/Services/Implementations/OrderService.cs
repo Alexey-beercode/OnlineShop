@@ -19,15 +19,13 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
-    private readonly ShopDbContext _context;
 
 
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper, ShopDbContext context)
+    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _mapper = mapper;
-        _context = context;
     }
 
     public async Task<OrderResponseDTO> CreateOrderAsync(CreateOrderRequestDTO createOrderRequestDTO, CancellationToken cancellationToken = default)
@@ -60,7 +58,7 @@ public class OrderService : IOrderService
         };
 
         await _orderRepository.CreateAsync(order, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         // Update products after order creation
         foreach (var updatedProduct in updatedProducts.Values)
