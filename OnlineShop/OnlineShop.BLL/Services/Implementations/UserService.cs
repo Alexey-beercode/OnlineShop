@@ -67,4 +67,15 @@ public class UserService : IUserService
 
         return user;
     }
+
+    public async Task DeleteAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            throw new EntityNotFoundException(nameof(User), userId);
+        }
+
+        await _userRepository.DeleteAsync(user, cancellationToken);
+    }
 }
