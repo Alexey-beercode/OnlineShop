@@ -15,21 +15,21 @@ public class OrderItemController(
     IOrderItemService _service): ControllerBase
 {
     [HttpGet("{id:guid}")]
-    //[Authorize]
+    [Authorize]
     public async Task<IResult> GetById([FromRoute] Guid id, CancellationToken token)
     {
         return TypedResults.Ok(await _service.GetByIdAsync(id, token));
     }
 
     [HttpGet]
-    //[Authorize]
+    [Authorize]
     public async Task<IResult> GetAllAsync(CancellationToken token)
     {
         return TypedResults.Ok(await _service.GetAllAsync(token));
     }
 
     [HttpPost]
-    //[Authorize]
+    [Authorize]
     public async Task<IResult> CreateUser([FromBody] OrderItemRequestDTO request, CancellationToken token)
     {
         await _service.CreateOrderItemAsync(request, token);
@@ -37,7 +37,7 @@ public class OrderItemController(
     }
 
     [HttpPut("{id:guid}")]
-    //[Authorize]
+    [Authorize]
     public async Task<IResult> UpdateUser([FromBody] OrderItemRequestDTO request, CancellationToken token)
     {
         await _service.UpdateOrderItemAsync(request, token);
@@ -45,7 +45,7 @@ public class OrderItemController(
     }
 
     [HttpDelete("{id:guid}")]
-    //[Authorize]
+    [Authorize]
     public async Task<IResult> DeleteUser([FromRoute] Guid id, CancellationToken token)
     {
         await _service.DeleteOrderItemAsync(id, token);
