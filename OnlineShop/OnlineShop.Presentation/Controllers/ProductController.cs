@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.BLL.DTO.Requests;
 using OnlineShop.BLL.Services.Interfaces;
 
 namespace OnlineShop.Controllers;
 
-[Route("product")]
+[Route("/api/product")]
 [ApiController]
 public class ProductController:Controller
 {
@@ -35,20 +36,23 @@ public class ProductController:Controller
         return Ok(products);
     }
 
+    [Authorize]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync(ProductRequestDTO productRequestDto)
+    public async Task<IActionResult> CreateAsync([FromBody]ProductRequestDTO productRequestDto)
     {
         await _productService.CreateAsync(productRequestDto, default);
         return Ok();
     }
 
+    [Authorize]
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync(ProductUpdateRequestDTO productUpdateRequestDto)
+    public async Task<IActionResult> UpdateAsync([FromBody]ProductUpdateRequestDTO productUpdateRequestDto)
     {
         await _productService.UpdateAsync(productUpdateRequestDto, default);
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {

@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MapsterMapper;
+using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.DTO.Response;
 using OnlineShop.BLL.DTO.Responses;
 using OnlineShop.BLL.Exceptions;
@@ -21,20 +22,26 @@ public class CategoryService : ICategoryService
         _mapper = mapper;
     }
 
-    public async Task CreateAsync(string categoryName, CancellationToken cancellationToken)
+    public async Task CreateAsync(CategoryRequestDTO categoryRequestDto, CancellationToken cancellationToken)
     {
-        var category = await _categoryRepository.GetByNameAsync(categoryName);
+        var category = await _categoryRepository.GetByNameAsync(categoryRequestDto.CategoryName);
         if (category!=null)
         {
             throw new Exception($"Category with name : {category.Name} is exists");
         }
-        await _categoryRepository.CreateAsync(new Category() { Name = categoryName },cancellationToken);
+        await _categoryRepository.CreateAsync(new Category() { Name = categoryRequestDto.CategoryName },cancellationToken);
     }
 
-    public async Task<CategoriesCollectionResponseDTO> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<CategoryResponseDTO>> GetAllAsync(CancellationToken cancellationToken)
     {
         var categories = await _categoryRepository.GetAllAsync(cancellationToken);
-        return _mapper.Map<CategoriesCollectionResponseDTO>(categories); 
+        var categoriesDTOs = new List<CategoryResponseDTO>();
+        foreach (var category in categories)
+        {
+            categoriesDTOs.Add(_mapper.Map<CategoryResponseDTO>(category));
+        }
+
+        return categoriesDTOs;
     }
 
     public async Task<CategoryResponseDTO> GetByIdAsync(Guid id, CancellationToken cancellationToken)

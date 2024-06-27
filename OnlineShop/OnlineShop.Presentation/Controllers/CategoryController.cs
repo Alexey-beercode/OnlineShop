@@ -1,10 +1,12 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.BLL.DTO.Request;
 using OnlineShop.BLL.Services.Interfaces;
 
 namespace OnlineShop.Controllers;
 
-[Route("category")]
+[Route("/api/category")]
 [ApiController]
 public class CategoryController : Controller
 {
@@ -28,14 +30,16 @@ public class CategoryController : Controller
         var categories = await _categoryService.GetAllAsync(default);
         return Ok(categories);
     }
-
+    
+    [Authorize]
     [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync(string categoryName)
+    public async Task<IActionResult> CreateAsync([FromBody] CategoryRequestDTO categoryName)
     {
         await _categoryService.CreateAsync(categoryName, default);
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {

@@ -8,7 +8,7 @@ public interface IProductService
     Task CreateAsync(ProductRequestDTO productRequestDto,CancellationToken cancellationToken);
     Task UpdateAsync(ProductUpdateRequestDTO productRequestDto,CancellationToken cancellationToken);
     Task DeleteAsync(Guid id,CancellationToken cancellationToken);
-    Task<ProductsCollectionResponseDTO> GetAllAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<ProductResponseDTO>> GetAllAsync(CancellationToken cancellationToken);
     Task<ProductResponseDTO> GetByIdAsync(Guid id,CancellationToken cancellationToken);
-    Task<ProductsCollectionResponseDTO> GetByCategoryIdAsync(Guid categoryId,CancellationToken cancellationToken);
+    Task<IEnumerable<ProductResponseDTO>> GetByCategoryIdAsync(Guid categoryId,CancellationToken cancellationToken);
 }

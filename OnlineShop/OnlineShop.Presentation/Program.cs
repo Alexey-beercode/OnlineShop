@@ -13,4 +13,7 @@ var app = builder.Build();
 app.AddSwagger();
 app.AddApplicationMiddleware();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.MapGet("/", () => "Hello World!");
+
 app.Run();
