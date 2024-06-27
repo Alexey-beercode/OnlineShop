@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-12 text-center p-2">
+        <h4>All Products</h4>
+    </div>
+</div>
+
+<div class="row"> 
+    @for (item of productList; track 'productId') {
+    <div class="col-3">
+        <div class="box-shadow">
+            <div class="card mt-2">
+                <!-- TODO: IMG storage ? -->
+                <!-- <img class="img-fluid" appLazyImage [attr.data-src]="item.productImageUrl" src="" class="card-img-top" alt="..."> -->
+                <div class="card-body" >
+                    <div class="row">
+                        <div class="col-8">
+                            <h5 class="card-title" title="{{item.name}}">{{item.name}}</h5>
+                            <h5 class="card-title" title="name">NAME</h5>
+                        </div>
+                        <div class="col-4 text-end">
+                            <p class="card-text"><span class="text-danger fw-semibold me-2">{{item.price}}$</span>
+                                
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <a href="#" 
+                        (click)="addToCart(item.id.toString())"
+                        class="btn btn-white btn-animate">click me</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    } 
+</div>
